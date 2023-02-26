@@ -1,3 +1,6 @@
+import api.client.UserMethods;
+import api.model.User;
+import api.util.UserGenerator;
 import io.qameta.allure.junit4.DisplayName;
 import org.junit.After;
 import org.junit.Before;
@@ -6,7 +9,7 @@ import org.junit.Test;
 import static org.apache.http.HttpStatus.*;
 import static org.hamcrest.Matchers.equalTo;
 
-public class TestUserUpdate extends UserMethods{
+public class TestUserUpdate extends UserMethods {
     private User user;
 
     @Before
@@ -29,8 +32,7 @@ public class TestUserUpdate extends UserMethods{
                 .assertThat().statusCode(SC_OK)
                 .assertThat().body("success", equalTo(true),
                         "user.email", equalTo(newEmail),
-                        "user.name", equalTo(originalName))
-                .log().all();
+                        "user.name", equalTo(originalName));
 
         //для удаления обновим данные юзера
         user.setEmail(newEmail);
@@ -50,8 +52,7 @@ public class TestUserUpdate extends UserMethods{
                 .assertThat().statusCode(SC_OK)
                 .assertThat().body("success", equalTo(true),
                         "user.email", equalTo(originalEmail),
-                        "user.name", equalTo(newName))
-                .log().all();
+                        "user.name", equalTo(newName));
 
         //для удаления обновим данные юзера
         user.setName(newName);
@@ -69,8 +70,7 @@ public class TestUserUpdate extends UserMethods{
         updateUnauthorizedUserData(user, json)
                 .assertThat().statusCode(SC_UNAUTHORIZED)
                 .assertThat().body("success", equalTo(false),
-                        "message", equalTo("You should be authorised"))
-                .log().all();
+                        "message", equalTo("You should be authorised"));
     }
 
     @Test
@@ -85,14 +85,12 @@ public class TestUserUpdate extends UserMethods{
         updateUnauthorizedUserData(user, json)
                 .assertThat().statusCode(SC_UNAUTHORIZED)
                 .assertThat().body("success", equalTo(false),
-                        "message", equalTo("You should be authorised"))
-                .log().all();
+                        "message", equalTo("You should be authorised"));
     }
 
     @After
     public void cleanUp() {
         if (loginUser(user).extract().statusCode() == SC_OK)
             deleteUser(user).statusCode(SC_ACCEPTED);
-        else System.out.println("не удалю");
     }
 }

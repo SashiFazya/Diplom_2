@@ -1,3 +1,6 @@
+import api.client.UserMethods;
+import api.model.User;
+import api.util.UserGenerator;
 import io.qameta.allure.junit4.DisplayName;
 import org.junit.After;
 import org.junit.Before;
@@ -7,7 +10,7 @@ import static org.apache.http.HttpStatus.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
-public class TestUserCreation extends UserMethods{
+public class TestUserCreation extends UserMethods {
     private User user;
 
     @Before
@@ -21,8 +24,7 @@ public class TestUserCreation extends UserMethods{
             createUser(user)
                 .assertThat().statusCode(SC_OK)
                 .assertThat().body("success", equalTo(true),
-                        "accessToken", notNullValue())
-                    .log().all();
+                        "accessToken", notNullValue());
     }
 
     @Test
@@ -32,8 +34,7 @@ public class TestUserCreation extends UserMethods{
         createUser(user)
                 .assertThat().statusCode(SC_FORBIDDEN)
                 .assertThat().body("success", equalTo(false),
-                        "message", equalTo("User already exists"))
-                .log().all();
+                        "message", equalTo("User already exists"));
     }
 
     @Test
@@ -45,8 +46,7 @@ public class TestUserCreation extends UserMethods{
         createCustomUser(noEmailJson)
                 .assertThat().statusCode(SC_FORBIDDEN)
                 .assertThat().body("success", equalTo(false),
-                        "message", equalTo("Email, password and name are required fields"))
-                .log().all();
+                        "message", equalTo("Email, password and name are required fields"));
     }
 
     @Test
@@ -58,8 +58,7 @@ public class TestUserCreation extends UserMethods{
         createCustomUser(noPassJson)
                 .assertThat().statusCode(SC_FORBIDDEN)
                 .assertThat().body("success", equalTo(false),
-                        "message", equalTo("Email, password and name are required fields"))
-                .log().all();
+                        "message", equalTo("Email, password and name are required fields"));
     }
 
     @Test
@@ -71,8 +70,7 @@ public class TestUserCreation extends UserMethods{
         createCustomUser(noNameJson)
                 .assertThat().statusCode(SC_FORBIDDEN)
                 .assertThat().body("success", equalTo(false),
-                        "message", equalTo("Email, password and name are required fields"))
-                .log().all();
+                        "message", equalTo("Email, password and name are required fields"));
     }
 
     @After

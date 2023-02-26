@@ -1,3 +1,7 @@
+import api.client.OrderMethods;
+import api.client.UserMethods;
+import api.model.User;
+import api.util.UserGenerator;
 import io.qameta.allure.junit4.DisplayName;
 import org.junit.After;
 import org.junit.Before;
@@ -8,13 +12,11 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
 public class TestGetUserOrders extends OrderMethods {
-    Order order;
-    User user;
-    UserMethods userMethods;
+    private User user;
+    private UserMethods userMethods;
 
     @Before
     public void SetUp() {
-        order = new Order();
         user = UserGenerator.randomUser();
         userMethods = new UserMethods();
         userMethods.createUser(user);
@@ -29,8 +31,7 @@ public class TestGetUserOrders extends OrderMethods {
         getAuthorizedUserOrders(token)
                 .assertThat().statusCode(SC_OK)
                 .assertThat().body("orders", notNullValue(),
-                        "success", equalTo(true))
-                .log().all();
+                        "success", equalTo(true));
     }
 
     @Test
@@ -42,14 +43,12 @@ public class TestGetUserOrders extends OrderMethods {
         getAuthorizedUserOrders(token)
                 .assertThat().statusCode(SC_UNAUTHORIZED)
                 .assertThat().body("message", equalTo("You should be authorised"),
-                        "success", equalTo(false))
-                .log().all();
+                        "success", equalTo(false));
     }
 
     @After
     public void cleanUp() {
         if (userMethods.loginUser(user).extract().statusCode() == SC_OK)
             userMethods.deleteUser(user).statusCode(SC_ACCEPTED);
-        else System.out.println("не удалю");
     }
 }

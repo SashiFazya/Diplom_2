@@ -1,3 +1,6 @@
+import api.client.UserMethods;
+import api.model.User;
+import api.util.UserGenerator;
 import io.qameta.allure.junit4.DisplayName;
 import org.junit.After;
 import org.junit.Before;
@@ -7,7 +10,7 @@ import static org.apache.http.HttpStatus.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
-public class TestUserLogin extends UserMethods{
+public class TestUserLogin extends UserMethods {
     private User user;
 
     @Before
@@ -22,8 +25,7 @@ public class TestUserLogin extends UserMethods{
         loginUser(user)
                 .assertThat().statusCode(SC_OK)
                 .assertThat().body("success", equalTo(true),
-                        "accessToken", notNullValue())
-                .log().all();
+                        "accessToken", notNullValue());
     }
 
     @Test
@@ -34,11 +36,10 @@ public class TestUserLogin extends UserMethods{
         loginUser(user)
                 .assertThat().statusCode(SC_UNAUTHORIZED)
                 .assertThat().body("success", equalTo(false),
-                        "message", equalTo("email or password are incorrect"))
-                .log().all();
+                        "message", equalTo("email or password are incorrect"));
 
         //для удаления пользователя вернем верный email
-        user.setPassword(correctEmail);
+        user.setEmail(correctEmail);
     }
 
     @Test
@@ -47,11 +48,9 @@ public class TestUserLogin extends UserMethods{
         String correctPass = user.getPassword();
         user.setPassword("wrongPass123");
         loginUser(user)
-                .log().all()
                 .assertThat().statusCode(SC_UNAUTHORIZED)
                 .assertThat().body("success", equalTo(false),
-                        "message", equalTo("email or password are incorrect"))
-                .log().all();
+                        "message", equalTo("email or password are incorrect"));
 
         //для удаления пользователя вернем верный пароль
         user.setPassword(correctPass);
@@ -61,6 +60,5 @@ public class TestUserLogin extends UserMethods{
     public void cleanUp() {
         if (loginUser(user).extract().statusCode() == SC_OK)
             deleteUser(user).statusCode(SC_ACCEPTED);
-        else System.out.println("не удалю");
     }
 }

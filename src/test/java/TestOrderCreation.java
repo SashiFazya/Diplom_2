@@ -1,3 +1,8 @@
+import api.client.OrderMethods;
+import api.client.UserMethods;
+import api.model.Order;
+import api.model.User;
+import api.util.UserGenerator;
 import io.qameta.allure.junit4.DisplayName;
 import org.junit.After;
 import org.junit.Before;
@@ -9,9 +14,9 @@ import static org.apache.http.HttpStatus.*;
 import static org.hamcrest.Matchers.equalTo;
 
 public class TestOrderCreation extends OrderMethods {
-    Order order;
-    User user;
-    UserMethods userMethods;
+    private Order order;
+    private User user;
+    private UserMethods userMethods;
 
     @Before
     public void SetUp() {
@@ -31,8 +36,7 @@ public class TestOrderCreation extends OrderMethods {
         createOrderUnauthorized(order)
                 .assertThat().statusCode(SC_BAD_REQUEST)
                 .assertThat().body("message", equalTo("Ingredient ids must be provided"),
-                        "success", equalTo(false))
-                .log().all();
+                        "success", equalTo(false));
     }
 
     @Test
@@ -47,8 +51,7 @@ public class TestOrderCreation extends OrderMethods {
         createOrderUnauthorized(order)
                 .assertThat().statusCode(SC_OK)
                 .assertThat().body("name", equalTo(name),
-                        "success", equalTo(true))
-                .log().all();
+                        "success", equalTo(true));
     }
 
     @Test
@@ -60,8 +63,7 @@ public class TestOrderCreation extends OrderMethods {
         order.setIngredients(ingredients);
 
         createOrderUnauthorized(order)
-                .assertThat().statusCode(SC_INTERNAL_SERVER_ERROR)
-                .log().all();
+                .assertThat().statusCode(SC_INTERNAL_SERVER_ERROR);
     }
 
     @Test
@@ -74,8 +76,7 @@ public class TestOrderCreation extends OrderMethods {
         order.setIngredients(ingredients);
 
         createOrderUnauthorized(order)
-                .assertThat().statusCode(SC_INTERNAL_SERVER_ERROR)
-                .log().all();
+                .assertThat().statusCode(SC_INTERNAL_SERVER_ERROR);
     }
 
     @Test
@@ -88,8 +89,7 @@ public class TestOrderCreation extends OrderMethods {
         order.setIngredients(ingredients);
 
         createOrderUnauthorized(order)
-                .assertThat().statusCode(SC_INTERNAL_SERVER_ERROR)
-                .log().all();
+                .assertThat().statusCode(SC_INTERNAL_SERVER_ERROR);
     }
 
     @Test
@@ -102,8 +102,7 @@ public class TestOrderCreation extends OrderMethods {
         createOrderAuthorized(order, user)
                 .assertThat().statusCode(SC_BAD_REQUEST)
                 .assertThat().body("message", equalTo("Ingredient ids must be provided"),
-                        "success", equalTo(false))
-                .log().all();
+                        "success", equalTo(false));
     }
 
     @Test
@@ -118,8 +117,7 @@ public class TestOrderCreation extends OrderMethods {
                 .assertThat().statusCode(SC_OK)
                 .assertThat().body("name", equalTo(name),
                         "success", equalTo(true),
-                        "order.owner.email", equalTo(user.getEmail()))
-                .log().all();
+                        "order.owner.email", equalTo(user.getEmail()));
     }
 
     @Test
@@ -131,14 +129,12 @@ public class TestOrderCreation extends OrderMethods {
         order.setIngredients(ingredients);
 
         createOrderAuthorized(order, user)
-                .assertThat().statusCode(SC_INTERNAL_SERVER_ERROR)
-                .log().all();
+                .assertThat().statusCode(SC_INTERNAL_SERVER_ERROR);
     }
 
     @After
     public void cleanUp() {
         if (userMethods.loginUser(user).extract().statusCode() == SC_OK)
             userMethods.deleteUser(user).statusCode(SC_ACCEPTED);
-        else System.out.println("не удалю");
     }
 }

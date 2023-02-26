@@ -1,3 +1,5 @@
+package api.model;
+
 public class LoginData {
     private String email;
     private String password;

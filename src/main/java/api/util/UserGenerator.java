@@ -1,3 +1,6 @@
+package api.util;
+
+import api.model.User;
 import com.github.javafaker.Faker;
 
 public class UserGenerator {
