@@ -12,11 +12,13 @@ import static org.hamcrest.Matchers.notNullValue;
 
 public class TestUserLogin extends UserMethods {
     private User user;
+    private String accessToken;
 
     @Before
     public void setUp() {
         user = UserGenerator.randomUser();
         createUser(user);
+        accessToken = getUserToken(user);
     }
 
     @Test
@@ -37,9 +39,6 @@ public class TestUserLogin extends UserMethods {
                 .assertThat().statusCode(SC_UNAUTHORIZED)
                 .assertThat().body("success", equalTo(false),
                         "message", equalTo("email or password are incorrect"));
-
-        //для удаления пользователя вернем верный email
-        user.setEmail(correctEmail);
     }
 
     @Test
@@ -51,14 +50,11 @@ public class TestUserLogin extends UserMethods {
                 .assertThat().statusCode(SC_UNAUTHORIZED)
                 .assertThat().body("success", equalTo(false),
                         "message", equalTo("email or password are incorrect"));
-
-        //для удаления пользователя вернем верный пароль
-        user.setPassword(correctPass);
     }
 
     @After
     public void cleanUp() {
-        if (loginUser(user).extract().statusCode() == SC_OK)
-            deleteUser(user).statusCode(SC_ACCEPTED);
+        if (accessToken != null)
+            deleteUser(accessToken).statusCode(SC_ACCEPTED);
     }
 }

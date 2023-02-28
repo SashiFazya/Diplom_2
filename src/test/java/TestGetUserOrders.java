@@ -14,12 +14,14 @@ import static org.hamcrest.Matchers.notNullValue;
 public class TestGetUserOrders extends OrderMethods {
     private User user;
     private UserMethods userMethods;
+    private String accessToken;
 
     @Before
     public void SetUp() {
         user = UserGenerator.randomUser();
         userMethods = new UserMethods();
         userMethods.createUser(user);
+        accessToken = userMethods.getUserToken(user);
     }
 
     @Test
@@ -27,8 +29,8 @@ public class TestGetUserOrders extends OrderMethods {
             "авторизованный пользователь")
     public void checkGetAuthorizedUserOrders() {
         generateAuthUserOrder(user);
-        String token = userMethods.getUserToken(user);
-        getAuthorizedUserOrders(token)
+
+        getAuthorizedUserOrders(accessToken)
                 .assertThat().statusCode(SC_OK)
                 .assertThat().body("orders", notNullValue(),
                         "success", equalTo(true));
@@ -39,8 +41,9 @@ public class TestGetUserOrders extends OrderMethods {
             "неавторизованный пользователь")
     public void checkGetUnauthorizedUserOrders() {
         generateAuthUserOrder(user);
-        String token = "";
-        getAuthorizedUserOrders(token)
+
+        String emptyToken = "";
+        getAuthorizedUserOrders(emptyToken)
                 .assertThat().statusCode(SC_UNAUTHORIZED)
                 .assertThat().body("message", equalTo("You should be authorised"),
                         "success", equalTo(false));
@@ -48,7 +51,7 @@ public class TestGetUserOrders extends OrderMethods {
 
     @After
     public void cleanUp() {
-        if (userMethods.loginUser(user).extract().statusCode() == SC_OK)
-            userMethods.deleteUser(user).statusCode(SC_ACCEPTED);
+        if (accessToken != null)
+            userMethods.deleteUser(accessToken).statusCode(SC_ACCEPTED);
     }
 }

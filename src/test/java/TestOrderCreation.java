@@ -17,6 +17,7 @@ public class TestOrderCreation extends OrderMethods {
     private Order order;
     private User user;
     private UserMethods userMethods;
+    private String accessToken;
 
     @Before
     public void SetUp() {
@@ -24,6 +25,7 @@ public class TestOrderCreation extends OrderMethods {
         user = UserGenerator.randomUser();
         userMethods = new UserMethods();
         userMethods.createUser(user);
+        accessToken = userMethods.getUserToken(user);
     }
 
     @Test
@@ -134,7 +136,7 @@ public class TestOrderCreation extends OrderMethods {
 
     @After
     public void cleanUp() {
-        if (userMethods.loginUser(user).extract().statusCode() == SC_OK)
-            userMethods.deleteUser(user).statusCode(SC_ACCEPTED);
+        if (accessToken != null)
+            userMethods.deleteUser(accessToken).statusCode(SC_ACCEPTED);
     }
 }

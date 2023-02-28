@@ -60,10 +60,10 @@ public class UserMethods extends SetSpecification {
     }
 
     @Step("Удалить пользователя {user.email}")
-    public ValidatableResponse deleteUser(User user) {
+    public ValidatableResponse deleteUser(String accessToken) {
         return given()
                 .spec(getSpec())
-                .header("Authorization", getUserToken(user)).log().all()
+                .header("Authorization", accessToken).log().all()
                 .delete(DELETE_USER_URL)
                 .then().log().all();
     }

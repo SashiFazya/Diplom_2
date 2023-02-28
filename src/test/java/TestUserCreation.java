@@ -12,6 +12,7 @@ import static org.hamcrest.Matchers.notNullValue;
 
 public class TestUserCreation extends UserMethods {
     private User user;
+    private String accessToken;
 
     @Before
     public void setUp() {
@@ -75,7 +76,8 @@ public class TestUserCreation extends UserMethods {
 
     @After
     public void cleanUp() {
-        if (loginUser(user).extract().statusCode() == SC_OK)
-            deleteUser(user).statusCode(SC_ACCEPTED);
+        accessToken = getUserToken(user);
+        if (accessToken != null)
+            deleteUser(accessToken).statusCode(SC_ACCEPTED);
     }
 }

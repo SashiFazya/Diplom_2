@@ -11,11 +11,13 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class TestUserUpdate extends UserMethods {
     private User user;
+    private String accessToken;
 
     @Before
     public void setUp() {
         user = UserGenerator.randomUser();
         createUser(user);
+        accessToken = getUserToken(user);
     }
 
     @Test
@@ -33,9 +35,6 @@ public class TestUserUpdate extends UserMethods {
                 .assertThat().body("success", equalTo(true),
                         "user.email", equalTo(newEmail),
                         "user.name", equalTo(originalName));
-
-        //для удаления обновим данные юзера
-        user.setEmail(newEmail);
     }
 
     @Test
@@ -53,9 +52,6 @@ public class TestUserUpdate extends UserMethods {
                 .assertThat().body("success", equalTo(true),
                         "user.email", equalTo(originalEmail),
                         "user.name", equalTo(newName));
-
-        //для удаления обновим данные юзера
-        user.setName(newName);
     }
 
     @Test
@@ -90,7 +86,7 @@ public class TestUserUpdate extends UserMethods {
 
     @After
     public void cleanUp() {
-        if (loginUser(user).extract().statusCode() == SC_OK)
-            deleteUser(user).statusCode(SC_ACCEPTED);
+        if (accessToken != null)
+            deleteUser(accessToken).statusCode(SC_ACCEPTED);
     }
 }
